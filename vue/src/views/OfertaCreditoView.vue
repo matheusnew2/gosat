@@ -38,7 +38,7 @@ function buscarOfertas(){
     errors.errors = [];
     ofertas.ofertas = [];
     http.post('getOfertas', formData).then(response => {
-        if9
+        
         if(response.data.length == 0){
             ofertas.ofertas = null;
         }else{
@@ -49,7 +49,6 @@ function buscarOfertas(){
         
     }).catch(error => {
         if(error.status == 502){
-            
             toast.add({
                 severity: 'error',
                 summary: 'Alerta',
