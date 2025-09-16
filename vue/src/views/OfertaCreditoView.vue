@@ -8,6 +8,7 @@ import {Fluid, InputText, Button, DataTable,Column} from 'primevue';
 document.title = 'Listagem de crédito';
 const errors = reactive({'errors': []});
 const ofertas = reactive({ofertas: []});
+const cpf = ref('');
 const loading = ref(false);
 function maskOfertas(){
     ofertas.ofertas.forEach(oferta => {
@@ -27,18 +28,24 @@ function formataMoeda(valor){
 }
 function buscarOfertas(){
     event.preventDefault();
+    if(cpf.value == ''){
+        errors.errors = [];
+        errors.errors.cpf = ['O campo CPF é obrigatório'];
+        return;
+    }
     const formData = new FormData(document.getElementById('form'));
 	loading.value = true;
     errors.errors = [];
     ofertas.ofertas = [];
     http.post('getOfertas', formData).then(response => {
+        if9
         if(response.data.length == 0){
             ofertas.ofertas = null;
         }else{
             ofertas.ofertas = response.data.ofertas;
             maskOfertas();
         }
-        loading = false;
+        loading.value = false;
         
     }).catch(error => {
         if(error.status == 502){
@@ -59,7 +66,7 @@ function buscarOfertas(){
         }else{
             ofertas.ofertas= [];
         }
-        loading = false;
+        loading.value = false;
     });
 }
 
@@ -69,11 +76,11 @@ function buscarOfertas(){
         <form class="col-span-12 xl:col-span-12" v-on:submit="buscarOfertas" id="form">
             <div class="card flex flex-col gap-4 w-full grid" >
                 <h1>Consulta de crédito</h1>
-                <Fluid class="flex flex-wrap flex-col items-start gap-4"style="display: flex;flex-flow: wrap;flex-direction: row;    align-items: flex-end;    gap: 8px;">
+                <Fluid class="flex flex-wrap flex-col items-start gap-4" style="display: flex;flex-flow: wrap;flex-direction: row;    align-items: flex-end;    gap: 8px;">
                     <div class="flex flex-col col-span-4 md:flex-row gap-4"  style="width: 200px;">
                         <div class="flex flex-wrap gap-2 w-full">
                             <label for="id_servico">CPF*</label>
-                            <InputText style="margin-top: 5px;" id="cpf" optionLabel="cpf"  name="cpf" placeholder="Insira o CPF" />
+                            <InputText style="margin-top: 5px;" id="cpf" v-model="cpf" optionLabel="cpf"  name="cpf" placeholder="Insira o CPF" />
                         </div>
                     </div>
                     <div style="flex:1">
