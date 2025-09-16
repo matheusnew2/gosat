@@ -1,7 +1,7 @@
 <script setup>
 import Loader from '@/components/Loader.vue';
 import http from '@/service/http';
-import { reactive } from 'vue';
+import { reactive ,ref } from 'vue';
 
 import {Fluid, InputText, Button, DataTable,Column} from 'primevue';
 
