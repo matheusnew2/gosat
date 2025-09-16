@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Gosat API
+  version: 1.0.0
+servers:
+    - url: https://gosat.matheusnew2.dev.br/api/v1
+      description: Online API
+    - url: http://localhost/api/v1
+      description: Local API
+paths:
+  /getOfertas:
+    post:
+      tags:
+        - Ofertas de crédito
+      summary: Consulta ofertas de crédito para o CPF informado
+      description: Consulta ofertas de crédito para o CPF informado ordernando pela menor parcela mensal
+      requestBody:
+        required: true
+        description: Created user object
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/requestCredito'
+
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfertasCredito'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OfertasCredito'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErros"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    requestCredito:
+      type: object
+      properties:
+        cpf:
+          type: string
+          example: 11111111111
+    OfertasCredito:
+      type: object
+      properties:
+        ofertas:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfertaCredito'
+
+    OfertaCredito:
+      type: object
+      properties:
+        instituicaoFinanceira:
+          type: string
+        modalidadeCredito:
+          type: string
+        valorAPagar:
+          type: number
+        valorSolicitado:
+          type: number
+        taxaJuros:
+          type: number
+        qntParcelas:
+          type: integer
+    ValidationErros:
+      type: object
+      properties:
+          message:
+            type: string
+          errors:
+            type: object
+            properties:
+              cpf:
+                type: array
+                items :
+                    type: string
+          
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: NotFound
+        code:
+          type: integer
+          example: 404
+        
