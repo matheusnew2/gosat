@@ -8,7 +8,7 @@ import {Fluid, InputText, Button, DataTable,Column} from 'primevue';
 document.title = 'Listagem de crédito';
 const errors = reactive({'errors': []});
 const ofertas = reactive({ofertas: []});
-
+const loading = ref(false);
 function maskOfertas(){
     ofertas.ofertas.forEach(oferta => {
         oferta.parcelaMensal = formataMoeda(calculaParcela(oferta.valorSolicitado, oferta.taxaJuros, oferta.qntParcelas));
@@ -28,7 +28,7 @@ function formataMoeda(valor){
 function buscarOfertas(){
     event.preventDefault();
     const formData = new FormData(document.getElementById('form'));
-
+	loading.value = true;
     errors.errors = [];
     ofertas.ofertas = [];
     http.post('getOfertas', formData).then(response => {
@@ -38,6 +38,7 @@ function buscarOfertas(){
             ofertas.ofertas = response.data.ofertas;
             maskOfertas();
         }
+        loading = false;
         
     }).catch(error => {
         if(error.status == 502){
@@ -58,6 +59,7 @@ function buscarOfertas(){
         }else{
             ofertas.ofertas= [];
         }
+        loading = false;
     });
 }
 
@@ -102,7 +104,7 @@ function buscarOfertas(){
             </template>
         
         </div>
-        <template v-else-if="ofertas.ofertas == []">
+        <template v-else-if="loading">
             <Loader/>
         </template>
         <template v-else-if="ofertas.ofertas == null">
